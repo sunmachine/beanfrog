@@ -12,7 +12,11 @@ const {Client, Intents, Collection} = require("discord.js");
 
 // Client Configuration
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS]
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    ]
 });
 
 // Command registration.
@@ -46,7 +50,7 @@ client.on('interactionCreate', async interaction => {
         await command.execute(interaction);
     } catch (error) {
         console.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+        await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
     }
 });
 
