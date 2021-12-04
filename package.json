@@ -7,8 +7,9 @@
   },
   "private": true,
   "scripts": {
-    "start": "node .",
-    "deploy-commands": "node deploy-commands.js && node ."
+    "dev": "node .",
+    "deploy-commands": "node deploy-commands.js",
+    "start": "npm run deploy-commands && npm run start"
   },
   "dependencies": {
     "@discordjs/builders": "^0.8.2",
