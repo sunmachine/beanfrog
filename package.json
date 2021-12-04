@@ -1,5 +1,5 @@
 {
-  "name": "frogbeans-bot",
+  "name": "beanfrog-bot",
   "version": "1.0.0",
   "main": "app.js",
   "engines": {
@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "deploy-commands": "node deploy-commands.js"
+    "deploy-commands": "node deploy-commands.js && node ."
   },
   "dependencies": {
     "@discordjs/builders": "^0.8.2",
