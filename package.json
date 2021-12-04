@@ -1,15 +1,14 @@
 {
   "name": "beanfrog-bot",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "main": "app.js",
   "engines": {
     "node": ">=17.1.0"
   },
   "private": true,
   "scripts": {
-    "dev": "node .",
-    "deploy-commands": "node deploy-commands.js",
-    "start": "npm run deploy-commands && npm run start"
+    "start": "node .",
+    "deploy-commands": "node deploy-commands.js"
   },
   "dependencies": {
     "@discordjs/builders": "^0.8.2",
