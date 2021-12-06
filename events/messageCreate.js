@@ -1,12 +1,40 @@
 const {Permissions} = require("discord.js");
+
+const frogReactionEmoji = '🐸';
 const frogReactionTriggers = [
     '🐸',
     'amphib',
     'frog',
     'toad',
-]
+];
 
-const frogReactionEmoji = '🐸';
+const illegalSymbols = {
+    "1": "l",
+    "3": "e",
+    "4": "a",
+    "5": "s",
+    "7": "t",
+    "0": "o",
+    "@": "o",
+};
+
+function normalize(text) {
+    text = text.toLowerCase();
+    for (let symbol in illegalSymbols) {
+        text = text.replaceAll(symbol.toLowerCase(), illegalSymbols[symbol]);
+    }
+
+    return text;
+}
+
+function canTriggerReaction(text) {
+    // Early-out.
+    if ( !text ) { return false; }
+
+    // Early-out if there is an exact match.
+    const normalized = normalize(text);
+    return frogReactionTriggers.find(e => normalized.includes(e));
+}
 
 module.exports = {
     name: 'messageCreate',
@@ -15,7 +43,7 @@ module.exports = {
         Permissions.FLAGS.ADD_REACTIONS
     ],
     async execute(message) {
-        if (frogReactionTriggers.find(e => message.content.includes(e))) {
+        if (canTriggerReaction(message.content)) {
             await message
                 .react(frogReactionEmoji)
                 .then(() => console.log(`Reacted to user with emoji: ${frogReactionEmoji}`));
