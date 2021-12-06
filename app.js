@@ -7,8 +7,10 @@ if (Number(version.slice(1).split(".")[0]) < 16)
 
 // Imports
 const fs = require('fs');
-const {token} = require('./config.json');
 const {Client, Intents, Collection} = require("discord.js");
+const EventHandler = require("./handlers/event-handler.js");
+const {token, guildId} = require("./config.json");
+
 
 // Client Configuration
 const client = new Client({
@@ -19,6 +21,8 @@ const client = new Client({
     ]
 });
 
+const guild = client.guilds.cache.get(guildId);
+
 // Command registration.
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -27,14 +31,15 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
+
 // Event registration.
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
+        client.once(event.name, (...args) => EventHandler.execute(event, ...args));
     } else {
-        client.on(event.name, (...args) => event.execute(...args));
+        client.on(event.name, (...args) => EventHandler.execute(event, ...args));
     }
 }
 
