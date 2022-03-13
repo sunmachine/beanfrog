@@ -33,7 +33,17 @@ function canTriggerReaction(text) {
 
     // Early-out if there is an exact match.
     const normalized = normalize(text);
-    return frogReactionTriggers.find(e => normalized.includes(e));
+    if (frogReactionTriggers.find(e => normalized.includes(e))) {
+        return true;
+    }
+
+    let exp = ""; 
+    for(let i = 0; i < normalized.length; ++i) {
+        const letter = normalized[i];
+        exp += `\\s*${letter}\\s*`;
+    }
+
+    return normalized.match(new RegExp(exp));
 }
 
 module.exports = {
