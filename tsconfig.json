@@ -1,0 +1,19 @@
+{
+  "extends": "@tsconfig/node17/tsconfig.json",
+  "compilerOptions": {
+    // Type Checking
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    },
+    "sourceMap": true
+  },
+  "include": ["app.ts", "src/**/*"]
+}
