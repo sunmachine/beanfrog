@@ -1,6 +1,8 @@
 import { Client, Intents } from "discord.js";
-import { CommandService } from "./src/CommandService";
-import { token } from "./config.json";
+import { clientId, guildId, token } from "./config/config.json";
+import { CommandHandler } from "./commands/CommandHandler";
+import { MessageCreateEvent } from "./events/MessageCreateEvent";
+import { ReadyEvent } from "./events/ReadyEvent";
 
 // Check node version.
 const version = process.version;
@@ -9,7 +11,7 @@ if (Number(version.slice(1).split(".")[0]) < 17)
     `Node 17.x or higher is required. Currently using version ${version}.`
   );
 
-const command = new CommandService();
+const command = new CommandHandler(clientId, guildId, token);
 command.registerCommands();
 
 // Client Configuration
@@ -21,19 +23,9 @@ const client = new Client({
   ],
 });
 
-client.on("ready", () => {
-  if (client && client.user) {
-    console.log(`Logged in as ${client.user.tag}!`);
-  }
-});
-
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return;
-
-  if (interaction.commandName === "ping") {
-    await interaction.reply("🐸");
-  }
-});
+client.on("ready", new ReadyEvent().onReady);
+client.on("messageCreate", new MessageCreateEvent(clientId).onMessageCreate);
+client.on("interactionCreate", command.handleInteraction);
 
 // Execute
 client.login(token);

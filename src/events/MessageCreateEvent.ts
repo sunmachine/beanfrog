@@ -1,69 +1,38 @@
-// import { Permissions } from "discord.js";
-// import { Event } from "./Event";
+import { FrogEmoteReaction } from "../behaviors/FrogEmoteReaction";
+import { Awaitable, GuildChannel, Message, Permissions } from "discord.js";
 
-// const frogReactionEmoji = '🐸';
-// const frogReactionTriggers = [
-//     '🐸',
-//     'amphib',
-//     'frog',
-//     'toad',
-// ];
+export interface MessageCreateBehavior {
+  trigger(message: Message): Promise<void>;
+  evaluate(message: Message): boolean;
+}
 
-// const illegalSymbols = {
-//     "1": "l",
-//     "3": "e",
-//     "4": "a",
-//     "5": "s",
-//     "7": "t",
-//     "0": "o",
-//     "@": "o",
-// };
+export class MessageCreateEvent {
+  constructor(private _clientId: string) {}
 
-// function normalize(text) {
-//     text = text.toLowerCase();
-//     for (let symbol in illegalSymbols) {
-//         text = text.replaceAll(symbol.toLowerCase(), illegalSymbols[symbol]);
-//     }
+  private permissions = [
+    Permissions.FLAGS.READ_MESSAGE_HISTORY,
+    Permissions.FLAGS.ADD_REACTIONS,
+  ];
 
-//     return text;
-// }
+  private behaviors: Array<MessageCreateBehavior> = [new FrogEmoteReaction()];
 
-// function canTriggerReaction(text) {
-//     // Early-out.
-//     if (!text) { return false; }
+  onMessageCreate(message: Message<boolean>): Awaitable<void> {
+    if (!this.hasPermissions(message)) return;
 
-//     // Early-out if there is an exact match.
-//     const normalized = normalize(text);
-//     if (frogReactionTriggers.find(e => normalized.includes(e))) {
-//         return true;
-//     }
+    for (const behavior of this.behaviors) {
+      if (behavior.evaluate(message)) {
+        behavior.trigger(message);
+      }
+    }
+  }
 
-//     let exp = "";
-//     for (let i = 0; i < normalized.length; ++i) {
-//         const letter = normalized[i];
-//         exp += `\\s*${letter}\\s*`;
-//     }
+  private hasPermissions(message: Message<boolean>) {
+    if (message?.channel instanceof GuildChannel) {
+      return message.channel
+        ?.permissionsFor(this._clientId)
+        ?.has(this.permissions);
+    }
 
-//     return normalized.match(new RegExp(exp));
-// }
-
-// export class MessageCreateEvent implements Event {
-//     private _name = "messageCreate";
-//     get name() { return this._name; };
-
-//     _requiresPermissions = [
-//         Permissions.FLAGS.READ_MESSAGE_HISTORY,
-//         Permissions.FLAGS.ADD_REACTIONS
-//     ];
-
-//     get requiresPermissions() { return this._requiresPermissions; };
-
-//     async execute(message) {
-//         if (canTriggerReaction(message.content)) {
-//             await message
-//                 .react(frogReactionEmoji)
-//                 .then(() => console.log(`Reacted to user with emoji: ${frogReactionEmoji}`));
-//         }
-//     }
-
-// }
+    return false;
+  }
+}
