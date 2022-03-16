@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "start": "tsc --build && node --enable-source-maps .",
+    "start": "node --enable-source-maps .",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
