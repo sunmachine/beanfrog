@@ -1,4 +1,4 @@
-import { FrogEmoteReaction } from "../behaviors/FrogEmoteReaction";
+import { FrogEmoteReactor } from "../behaviors/FrogEmoteReaction";
 import { Awaitable, GuildChannel, Message, Permissions } from "discord.js";
 
 export interface MessageCreateBehavior {
@@ -14,7 +14,7 @@ export class MessageCreateEvent {
     Permissions.FLAGS.ADD_REACTIONS,
   ];
 
-  private behaviors: Array<MessageCreateBehavior> = [new FrogEmoteReaction()];
+  private behaviors: Array<MessageCreateBehavior> = [new FrogEmoteReactor()];
 
   onMessageCreate(message: Message<boolean>): Awaitable<void> {
     if (!this.hasPermissions(message)) return;

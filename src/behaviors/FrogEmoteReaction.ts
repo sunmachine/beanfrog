@@ -1,9 +1,11 @@
 import { MessageCreateBehavior } from "../events/MessageCreateEvent";
 import { Message } from "discord.js";
 
-export class FrogEmoteReaction implements MessageCreateBehavior {
+export class FrogEmoteReactor implements MessageCreateBehavior {
   private reaction = "🐸";
-  private triggers = ["🐸", "amphib", "frog", "toad"];
+
+  private triggers = ["🐸", "amphib", "frog", "toad", "ribbit", "kermit"];
+
   private replacements = [
     { char: "1", replacement: "l" },
     { char: "3", replacement: "e" },
@@ -28,17 +30,8 @@ export class FrogEmoteReaction implements MessageCreateBehavior {
 
     // Early-out if there is an exact match.
     const text = this.normalize(message.content);
-    if (this.triggers.find((e) => text.includes(e))) {
-      return true;
-    }
 
-    let exp = "";
-    for (let i = 0; i < text.length; ++i) {
-      const letter = text[i];
-      exp += `\\s*${letter}\\s*`;
-    }
-
-    return new RegExp(exp, "g").test(text);
+    return this.isExactMatch(text) || this.isAestheticMatch(text);
   }
 
   private normalize(text: string) {
@@ -48,5 +41,33 @@ export class FrogEmoteReaction implements MessageCreateBehavior {
     }
 
     return text;
+  }
+
+  private isExactMatch(text: string): boolean {
+    return this.triggers.includes(text);
+  }
+
+  private isAestheticMatch(text: string) {
+    // Loop through each trigger.
+    for (const trigger of this.triggers) {
+      // And break it down to each character...
+      let exp = "";
+      for (let i = 0; i < trigger.length; ++i) {
+        const letter = trigger[i];
+        // If we're not looking at a whitespace
+        if (!/^\s$/i.test(letter)) {
+          exp += `\\s*${letter}`;
+        }
+      }
+
+      if (exp.length === 0) continue;
+
+      exp += "\\s*";
+      if (new RegExp(exp, "g").test(text)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
