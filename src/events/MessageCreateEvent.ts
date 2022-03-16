@@ -16,23 +16,23 @@ export class MessageCreateEvent {
 
   private behaviors: Array<MessageCreateBehavior> = [new FrogEmoteReactor()];
 
-  onMessageCreate(message: Message<boolean>): Awaitable<void> {
-    if (!this.hasPermissions(message)) return;
-
-    for (const behavior of this.behaviors) {
-      if (behavior.evaluate(message)) {
-        behavior.trigger(message);
-      }
-    }
-  }
-
-  private hasPermissions(message: Message<boolean>) {
+  private hasPermissions(message: Message<boolean>): boolean {
     if (message?.channel instanceof GuildChannel) {
-      return message.channel
+      return !!message.channel
         ?.permissionsFor(this._clientId)
         ?.has(this.permissions);
     }
 
     return false;
+  }
+
+  onMessageCreate(message: Message<boolean>): Awaitable<void> {
+    if (this.hasPermissions(message)) {
+      for (const behavior of this.behaviors) {
+        if (behavior.evaluate(message)) {
+          behavior.trigger(message);
+        }
+      }
+    }
   }
 }

@@ -12,20 +12,25 @@ if (Number(version.slice(1).split(".")[0]) < 17)
   );
 
 const command = new CommandHandler(clientId, guildId, token);
-command.registerCommands();
+command.registerCommands().then(setupClient);
 
-// Client Configuration
-const client = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-  ],
-});
+function setupClient() {
+  // Client Configuration
+  const client = new Client({
+    intents: [
+      Intents.FLAGS.GUILDS,
+      Intents.FLAGS.GUILD_MESSAGES,
+      Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    ],
+  });
 
-client.on("ready", new ReadyEvent().onReady);
-client.on("messageCreate", new MessageCreateEvent(clientId).onMessageCreate);
-client.on("interactionCreate", command.handleInteraction);
+  const ready = new ReadyEvent();
+  const messageCreate = new MessageCreateEvent(clientId);
 
-// Execute
-client.login(token);
+  client.on("ready", (client) => ready.onReady(client));
+  client.on("messageCreate", (msg) => messageCreate.onMessageCreate(msg));
+  client.on("interactionCreate", (i) => command.handleInteraction(i));
+
+  // Execute
+  client.login(token);
+}
