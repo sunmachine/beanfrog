@@ -13,8 +13,8 @@ export class CommandHandler {
 
   commands = [
     {
-      name: "ping",
-      description: "Replies with Pong!",
+      name: "poke",
+      description: "Poke BeanFrog!",
     },
   ];
 
@@ -40,7 +40,7 @@ export class CommandHandler {
   async handleInteraction(interaction: Interaction<CacheType>) {
     if (!interaction.isCommand()) return;
 
-    if (interaction.commandName === "ping") {
+    if (interaction.commandName === "poke") {
       await interaction.reply("🐸");
     }
   }
