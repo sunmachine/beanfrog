@@ -24,7 +24,8 @@ git-checkout () {
 
 build () {
   { # try
-    printh "Docker: Build"
+    printh "PNPM: Build"
+    nvm use
     NODE_ENV=production pnpm build
   } || { # catch 
     echo "Failed to build latest changes. Exiting..."
