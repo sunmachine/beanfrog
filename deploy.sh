@@ -32,11 +32,11 @@ build () {
   }
 }
 
-start-service () {
+restart-service () {
   { # try
 
     printh "systemd: Restart (user instance)"
-    systemctl --user start beanfrog
+    systemctl --user restart beanfrog
   } || { # catch 
     echo "Failed to build latest changes. Exiting..."
     exit 1
@@ -48,4 +48,4 @@ start-service () {
 
 git-checkout
 build
-start-service
+restart-service
