@@ -1,8 +1,0 @@
-version: '3'
-services:
-  beanfrog-bot-service:
-    build: .
-    image: 'sunmachine/beanfrog-bot-service:latest'
-    container_name: 'beanfrog-bot-service-container'
-    hostname: 'beanfrog-bot-service'
-    restart: unless-stopped

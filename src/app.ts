@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Client, Intents } from "discord.js";
 import { clientId, guildId, token } from "./config/config.json";
 import { CommandHandler } from "./commands/CommandHandler";
